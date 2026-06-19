@@ -182,14 +182,27 @@
     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
   }
 
-  function switchScene(scene) {
-    stopAutorotate();
-    scene.view.setParameters(scene.data.initialViewParameters);
-    scene.scene.switchTo();
+function switchScene(scene) {
+  stopAutorotate();
+  scene.view.setParameters(scene.data.initialViewParameters);
+
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  if (isIOS) {
+    scene.scene.switchTo({ transitionDuration: 0 });
+    setTimeout(function() {
+      scene.scene.switchTo({ transitionDuration: 800 });
+      startAutorotate();
+    }, 50);
+  } else {
+    scene.scene.switchTo({ transitionDuration: 800 });
     startAutorotate();
-    updateSceneName(scene);
-    updateSceneList(scene);
   }
+
+  updateSceneName(scene);
+  updateSceneList(scene);
+  updateScenePlanta(scene);
+}
 
   function updateSceneName(scene) {
     sceneNameElement.innerHTML = sanitize(scene.data.name);
@@ -219,6 +232,15 @@
   function toggleSceneList() {
     sceneListElement.classList.toggle('enabled');
     sceneListToggleElement.classList.toggle('enabled');
+  }
+
+     function updateScenePlanta(scene) {
+    var mapImg = document.querySelector('#map img');
+    mapImg.style.opacity = '0';
+    setTimeout(function() {
+      mapImg.src = './assets/' + scene.data.id + '.png';
+      mapImg.style.opacity = '1';
+    }, 400);
   }
 
   function startAutorotate() {

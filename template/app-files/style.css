@@ -110,7 +110,7 @@ body.multiple-scenes.mobile #titleBar {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: #0a0a0a;
@@ -340,7 +340,7 @@ body.fullscreen-enabled.mobile #autorotateToggle {
   padding: 0 15px;
   line-height: 30px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #0a0a0a;
@@ -935,7 +935,6 @@ body.view-control-buttons .viewControlButton {
   right: 16px;
   z-index: 10;
   width: 180px;
-  filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.75));
   transition: opacity 0.3s ease-in-out;
   transition-delay: 0.3s; /* waits before fading back in */
 }
@@ -951,4 +950,35 @@ body.view-control-buttons .viewControlButton {
   transition-delay: 0s; /* waits before fading back in */
   opacity: 0;
   pointer-events: none;
+}
+
+/* ─── Top/bottom vignette ────────────────────────────────── */
+
+#vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5; /* above #pano (0) but below UI elements (10+) */
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.18) 10%,
+    rgba(0, 0, 0, 0.00) 20%,
+    rgba(0, 0, 0, 0.00) 80%,
+    rgba(0, 0, 0, 0.18) 90%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+/* ─── Ensure top UI sits above vignette ──────────────────── */
+
+#titleBar,
+#sceneListToggle,
+#autorotateToggle,
+#fullscreenToggle,
+#sceneList {
+  z-index: 6;
 }

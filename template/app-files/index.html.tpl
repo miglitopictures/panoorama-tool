@@ -15,6 +15,7 @@
 <body class="<%- scenes.length > 1 ? 'multiple-scenes' : 'single-scene' %> <%- settings.viewControlButtons ? 'view-control-buttons' : '' %>">
 
 <div id="pano"></div>
+<div id="vignette"></div>
 
 <div id="sceneList">
   <ul class="scenes">
@@ -69,7 +70,7 @@
 
 <div id="map">
   <img src="./assets/0-sala-de-estar.png" alt="Planta baixa do empreendmento.">
-  <p> PLANTA BAIXA APARTAMENTO 3 QUARTOS <br> ÁREA PRIVATIVA : 49,74m² </p> 
+  <p> PLANTA PADRÃO APARTAMENTO <br> ÁREA PRIVATIVA : 49,74m² </p> 
 </div>
 
 

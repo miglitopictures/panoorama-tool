@@ -22460,6 +22460,10 @@
                           console.log("-> Swapping logo into the ZIP archive!");
                           l = window._customLogo;
                       }
+                      if (i.indexOf("style.css") !== -1 && window._customCss) {
+                          console.log("-> Swapping custom CSS into the ZIP archive!");
+                          l = window._customCss;
+                      }
                       // -------------------------------------
 
 

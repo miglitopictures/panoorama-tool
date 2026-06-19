@@ -308,6 +308,74 @@
         </div>
       </div>
 
+      <div class="accordion expand" id="css-accordion">
+    <div class="accordion-name" onclick="document.getElementById('css-accordion').classList.toggle('expand'); return false;" style="cursor: pointer;">
+        <svg class="icon"><use xlink:href="#sheet"></use></svg>
+        <div class="text">Custom CSS</div>
+        <a href="#" class="toggle">
+            <svg class="icon up"><use xlink:href="#up"></use></svg>
+            <svg class="icon down"><use xlink:href="#down"></use></svg>
+        </a>
+    </div>
+    <div class="accordion-content">
+        <div id="css-drop-zone" style="border: 2px dashed #ccc; padding: 16px; text-align: center; cursor: pointer;">
+            <div class="text" id="css-drop-text">Drop custom style.css</div>
+            <input type="file" id="cssFileInput" accept=".css" style="display: none;">
+        </div>
+    </div>
+</div>
+
+<script>
+  var cssDropZone = document.getElementById("css-drop-zone");
+  var cssFileInput = document.getElementById("cssFileInput");
+  var cssDropText = document.getElementById("css-drop-text");
+
+  function handleCssFile(file) {
+      if (!file || !file.name.match(/\.css$/i)) {
+          alert("Please provide a .css file");
+          return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+          // Store in a new global variable for the CSS
+          window._customCss = ev.target.result;
+          cssDropText.textContent = file.name + " ✓";
+          cssDropZone.style.borderColor = "#4caf50"; // Turn green on success
+      };
+      // Read as ArrayBuffer to match the zip generator's expectations
+      reader.readAsArrayBuffer(file);
+  }
+
+  // --- Drag and Drop Handlers ---
+  cssDropZone.addEventListener("dragover", function(e) {
+      e.preventDefault();
+      cssDropZone.style.borderColor = "#38a";
+  });
+
+  cssDropZone.addEventListener("dragleave", function() {
+      cssDropZone.style.borderColor = "#ccc";
+  });
+
+  cssDropZone.addEventListener("drop", function(e) {
+      e.preventDefault();
+      cssDropZone.style.borderColor = "#ccc";
+      handleCssFile(e.dataTransfer.files[0]);
+  });
+
+  // --- Double Click Handler ---
+  cssDropZone.addEventListener("dblclick", function() {
+      cssFileInput.click();
+  });
+
+  // --- File Input Handler ---
+  cssFileInput.addEventListener("change", function() {
+      if (this.files && this.files.length > 0) {
+          handleCssFile(this.files[0]);
+      }
+      this.value = null; 
+  });
+</script>
+
   <div class="accordion expand">
     <div class="accordion-name">
         <svg class="icon"><use xlink:href="#gallery"></use></svg>
@@ -315,7 +383,7 @@
     </div>
     <div class="accordion-content">
         <div id="logo-drop-zone" style="border: 2px dashed #ccc; padding: 16px; text-align: center; cursor: pointer;">
-            <div class="text">Drop or double-click to select logo .png</div>
+            <div class="text">Drop custom logo</div>
             <input type="file" id="logoFileInput" accept="image/png" style="display: none;">
         </div>
         <img id="logo-preview" style="display:none; max-width:100%; margin-top:8px;">

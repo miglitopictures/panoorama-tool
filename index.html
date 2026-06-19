@@ -308,14 +308,15 @@
         </div>
       </div>
 
-      <div class="accordion expand">
+  <div class="accordion expand">
     <div class="accordion-name">
         <svg class="icon"><use xlink:href="#gallery"></use></svg>
         <div class="text">Logo</div>
     </div>
     <div class="accordion-content">
         <div id="logo-drop-zone" style="border: 2px dashed #ccc; padding: 16px; text-align: center; cursor: pointer;">
-            <div class="text">Drop logo .png here</div>
+            <div class="text">Drop or double-click to select logo .png</div>
+            <input type="file" id="logoFileInput" accept="image/png" style="display: none;">
         </div>
         <img id="logo-preview" style="display:none; max-width:100%; margin-top:8px;">
     </div>
@@ -324,7 +325,24 @@
 <script>
   var dropZone = document.getElementById("logo-drop-zone");
   var preview = document.getElementById("logo-preview");
+  var fileInput = document.getElementById("logoFileInput");
 
+  function handleLogoFile(file) {
+      if (!file || !file.type.match("image/png")) {
+          alert("Please provide a PNG file");
+          return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+          window._customLogo = ev.target.result;
+          preview.src = URL.createObjectURL(file);
+          preview.style.display = "block";
+          dropZone.querySelector(".text").textContent = file.name + " ✓";
+      };
+      reader.readAsArrayBuffer(file);
+  }
+
+  // --- Drag and Drop Handlers ---
   dropZone.addEventListener("dragover", function(e) {
       e.preventDefault();
       dropZone.style.borderColor = "#38a";
@@ -337,20 +355,21 @@
   dropZone.addEventListener("drop", function(e) {
       e.preventDefault();
       dropZone.style.borderColor = "#ccc";
-      var file = e.dataTransfer.files[0];
-      if (!file || !file.type.match("image/png")) {
-          alert("Please drop a PNG file");
-          return;
+      handleLogoFile(e.dataTransfer.files[0]);
+  });
+
+  // --- Double Click Handler ---
+  dropZone.addEventListener("dblclick", function() {
+      fileInput.click();
+  });
+
+  // --- File Input Handler (matches selectFilesInput behavior) ---
+  fileInput.addEventListener("change", function() {
+      if (this.files && this.files.length > 0) {
+          handleLogoFile(this.files[0]);
       }
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-          // store as arraybuffer to match how other files are loaded
-          window._customLogo = ev.target.result;
-          preview.src = URL.createObjectURL(file);
-          preview.style.display = "block";
-          dropZone.querySelector(".text").textContent = file.name + " ✓";
-      };
-      reader.readAsArrayBuffer(file);
+      // Reset the value so the same file can be selected again
+      this.value = null; 
   });
 </script>
 

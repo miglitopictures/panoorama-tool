@@ -308,83 +308,21 @@
         </div>
       </div>
 
-      <div class="accordion expand" id="css-accordion">
-    <div class="accordion-name" onclick="document.getElementById('css-accordion').classList.toggle('expand'); return false;" style="cursor: pointer;">
-        <svg class="icon"><use xlink:href="#sheet"></use></svg>
-        <div class="text">Custom CSS</div>
+      <div class="accordion expand" id="logo-accordion">
+    <div class="accordion-name" onclick="document.getElementById('logo-accordion').classList.toggle('expand'); return false;" style="cursor: pointer;">
+        <svg class="icon"><use xlink:href="#gallery"></use></svg>
+        <div class="text">Logo</div>
         <a href="#" class="toggle">
             <svg class="icon up"><use xlink:href="#up"></use></svg>
             <svg class="icon down"><use xlink:href="#down"></use></svg>
         </a>
     </div>
     <div class="accordion-content">
-        <div id="css-drop-zone" style="border: 2px dashed #ccc; padding: 16px; text-align: center; cursor: pointer;">
-            <div class="text" id="css-drop-text">Drop custom style.css</div>
-            <input type="file" id="cssFileInput" accept=".css" style="display: none;">
-        </div>
-    </div>
-</div>
-
-<script>
-  var cssDropZone = document.getElementById("css-drop-zone");
-  var cssFileInput = document.getElementById("cssFileInput");
-  var cssDropText = document.getElementById("css-drop-text");
-
-  function handleCssFile(file) {
-      if (!file || !file.name.match(/\.css$/i)) {
-          alert("Please provide a .css file");
-          return;
-      }
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-          // Store in a new global variable for the CSS
-          window._customCss = ev.target.result;
-          cssDropText.textContent = file.name + " ✓";
-          cssDropZone.style.borderColor = "#4caf50"; // Turn green on success
-      };
-      // Read as ArrayBuffer to match the zip generator's expectations
-      reader.readAsArrayBuffer(file);
-  }
-
-  // --- Drag and Drop Handlers ---
-  cssDropZone.addEventListener("dragover", function(e) {
-      e.preventDefault();
-      cssDropZone.style.borderColor = "#38a";
-  });
-
-  cssDropZone.addEventListener("dragleave", function() {
-      cssDropZone.style.borderColor = "#ccc";
-  });
-
-  cssDropZone.addEventListener("drop", function(e) {
-      e.preventDefault();
-      cssDropZone.style.borderColor = "#ccc";
-      handleCssFile(e.dataTransfer.files[0]);
-  });
-
-  // --- Double Click Handler ---
-  cssDropZone.addEventListener("dblclick", function() {
-      cssFileInput.click();
-  });
-
-  // --- File Input Handler ---
-  cssFileInput.addEventListener("change", function() {
-      if (this.files && this.files.length > 0) {
-          handleCssFile(this.files[0]);
-      }
-      this.value = null; 
-  });
-</script>
-
-  <div class="accordion expand">
-    <div class="accordion-name">
-        <svg class="icon"><use xlink:href="#gallery"></use></svg>
-        <div class="text">Logo</div>
-    </div>
-    <div class="accordion-content">
-        <div id="logo-drop-zone" style="border: 2px dashed #ccc; padding: 16px; text-align: center; cursor: pointer;">
-            <div class="text">Drop custom logo</div>
+        <div id="logo-drop-zone" style="border: 2px dashed #ccc; padding: 16px; text-align: center; cursor: pointer; position: relative;">
+            <div class="text" id="logo-drop-text">Add custom logo</div>
             <input type="file" id="logoFileInput" accept="image/png" style="display: none;">
+            
+            <div id="logo-clear" style="display: none; position: absolute; top: 4px; right: 8px; color: #e2611c; font-weight: bold; font-size: 18px; padding: 4px;" title="Remove custom logo">✕</div>
         </div>
         <img id="logo-preview" style="display:none; max-width:100%; margin-top:8px;">
     </div>
@@ -394,6 +332,8 @@
   var dropZone = document.getElementById("logo-drop-zone");
   var preview = document.getElementById("logo-preview");
   var fileInput = document.getElementById("logoFileInput");
+  var logoDropText = document.getElementById("logo-drop-text");
+  var logoClear = document.getElementById("logo-clear");
 
   function handleLogoFile(file) {
       if (!file || !file.type.match("image/png")) {
@@ -405,10 +345,23 @@
           window._customLogo = ev.target.result;
           preview.src = URL.createObjectURL(file);
           preview.style.display = "block";
-          dropZone.querySelector(".text").textContent = file.name + " ✓";
+          logoDropText.textContent = file.name + " ✓";
+          logoClear.style.display = "block"; // Show the clear button
       };
       reader.readAsArrayBuffer(file);
   }
+
+  // --- Clear Handler ---
+  logoClear.addEventListener("click", function(e) {
+      e.stopPropagation(); // Stop click from bubbling up
+      window._customLogo = null; // Clear from memory
+      fileInput.value = null; // Clear the input
+      preview.style.display = "none";
+      preview.src = "";
+      logoDropText.textContent = "Drop or double-click to select logo .png";
+      logoClear.style.display = "none";
+      dropZone.style.borderColor = "#ccc";
+  });
 
   // --- Drag and Drop Handlers ---
   dropZone.addEventListener("dragover", function(e) {
@@ -426,17 +379,92 @@
       handleLogoFile(e.dataTransfer.files[0]);
   });
 
-  // --- Double Click Handler ---
   dropZone.addEventListener("dblclick", function() {
       fileInput.click();
   });
 
-  // --- File Input Handler (matches selectFilesInput behavior) ---
   fileInput.addEventListener("change", function() {
       if (this.files && this.files.length > 0) {
           handleLogoFile(this.files[0]);
       }
-      // Reset the value so the same file can be selected again
+      this.value = null; 
+  });
+</script>
+
+<div class="accordion expand" id="css-accordion">
+    <div class="accordion-name" onclick="document.getElementById('css-accordion').classList.toggle('expand'); return false;" style="cursor: pointer;">
+        <svg class="icon"><use xlink:href="#sheet"></use></svg>
+        <div class="text">Custom CSS</div>
+        <a href="#" class="toggle">
+            <svg class="icon up"><use xlink:href="#up"></use></svg>
+            <svg class="icon down"><use xlink:href="#down"></use></svg>
+        </a>
+    </div>
+    <div class="accordion-content">
+        <div id="css-drop-zone" style="border: 2px dashed #ccc; padding: 16px; text-align: center; cursor: pointer; position: relative;">
+            <div class="text" id="css-drop-text">Add custom style</div>
+            <input type="file" id="cssFileInput" accept=".css" style="display: none;">
+            
+            <div id="css-clear" style="display: none; position: absolute; top: 4px; right: 8px; color: #e2611c; font-weight: bold; font-size: 18px; padding: 4px;" title="Remove custom CSS">✕</div>
+        </div>
+    </div>
+</div>
+
+<script>
+  var cssDropZone = document.getElementById("css-drop-zone");
+  var cssFileInput = document.getElementById("cssFileInput");
+  var cssDropText = document.getElementById("css-drop-text");
+  var cssClear = document.getElementById("css-clear");
+
+  function handleCssFile(file) {
+      if (!file || !file.name.match(/\.css$/i)) {
+          alert("Please provide a .css file");
+          return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+          window._customCss = ev.target.result;
+          cssDropText.textContent = file.name + " ✓";
+          cssDropZone.style.borderColor = "#4caf50"; 
+          cssClear.style.display = "block"; // Show the clear button
+      };
+      reader.readAsArrayBuffer(file);
+  }
+
+  // --- Clear Handler ---
+  cssClear.addEventListener("click", function(e) {
+      e.stopPropagation(); // Stop click from bubbling up
+      window._customCss = null; // Clear from memory
+      cssFileInput.value = null; // Clear the input
+      cssDropText.textContent = "Drop or double-click to select style.css";
+      cssClear.style.display = "none";
+      cssDropZone.style.borderColor = "#ccc";
+  });
+
+  // --- Drag and Drop Handlers ---
+  cssDropZone.addEventListener("dragover", function(e) {
+      e.preventDefault();
+      cssDropZone.style.borderColor = "#38a";
+  });
+
+  cssDropZone.addEventListener("dragleave", function() {
+      cssDropZone.style.borderColor = "#ccc";
+  });
+
+  cssDropZone.addEventListener("drop", function(e) {
+      e.preventDefault();
+      cssDropZone.style.borderColor = "#ccc";
+      handleCssFile(e.dataTransfer.files[0]);
+  });
+
+  cssDropZone.addEventListener("dblclick", function() {
+      cssFileInput.click();
+  });
+
+  cssFileInput.addEventListener("change", function() {
+      if (this.files && this.files.length > 0) {
+          handleCssFile(this.files[0]);
+      }
       this.value = null; 
   });
 </script>

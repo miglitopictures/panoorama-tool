@@ -82,6 +82,10 @@
       <path d="M4.929,5v25h34.504V5H4.929z M36.969,25.833L32.04,17.5l-5.587,4.723L22.182,15L7.394,27.5v-20h29.575V25.833z M9.859,13.75c0,2.07,1.655,3.75,3.696,3.75c2.041,0,3.697-1.68,3.697-3.75c0-2.072-1.656-3.75-3.697-3.75C11.514,10,9.859,11.679,9.859,13.75zM34.504,0H0v25h2.465V2.5h32.039V0z"/>
     </symbol>
 
+    <symbol id="map-icon" viewBox="0 0 30 30">
+      <path d="M0,3v24l10-4l10,4l10-4V0L20,4L10,0L0,3z M9,20.5l-7,2.8V5.2l7-2.1V20.5z M19,23.8l-8-3.2V3.2l8,3.2V23.8z M28,24.8l-7,2.2V7.1l7-2.8V24.8z"/>
+    </symbol>
+
     <symbol id="upload" viewBox="0 0 47.721 30">
       <path d="M40.579,12.169c-0.142-0.934-0.378-1.86-0.711-2.773C37.818,3.777,32.398,0,26.378,0c-1.661,0-3.304,0.288-4.879,0.855c-3.868,1.39-6.948,4.388-8.454,8.155c-0.452-0.045-0.902-0.07-1.351-0.07C5.245,8.939,0,13.641,0,19.418c0,5.436,4.39,9.815,10.438,10.409l1.707,0.14v-0.16H36.98V30l1.688-0.147c5.245-0.457,9.054-4.25,9.054-9.022C47.721,16.816,44.782,13.329,40.579,12.169z M38.882,26.724H10.592l-0.144,0.002c-4.272-0.541-7.343-3.574-7.343-7.308c0-4.076,3.852-7.394,8.589-7.394c0.687,0,1.384,0.073,2.076,0.218l1.412,0.297l0.402-1.378c0.995-3.426,3.602-6.194,6.971-7.407c1.235-0.445,2.523-0.671,3.824-0.671c4.716,0,8.965,2.96,10.567,7.362c0.372,1.017,0.595,2.056,0.658,3.086l0.081,1.224l1.219,0.2c3.312,0.543,5.714,3.016,5.714,5.877C44.617,23.87,42.284,26.241,38.882,26.724z"/>
       <path d="M30.329,15.958l-5.973-5.421c-0.239-0.205-0.518-0.308-0.836-0.308c-0.325,0-0.601,0.103-0.827,0.308l-5.981,5.421c-0.232,0.211-0.349,0.464-0.349,0.759c0,0.3,0.117,0.55,0.349,0.749l0.689,0.625c0.221,0.21,0.496,0.316,0.827,0.316s0.606-0.106,0.828-0.316l4.465-4.04l4.466,4.04c0.221,0.21,0.495,0.316,0.826,0.316c0.324,0,0.604-0.106,0.837-0.316l0.688-0.625c0.226-0.206,0.341-0.455,0.341-0.749C30.678,16.423,30.561,16.17,30.329,15.958z"/>
@@ -492,6 +496,12 @@
               <div class="info">
                 <div class="properties">
                   <input class="name" type="text" data-bind="textInput: name, click: select, alignOnBlur, stopKeyPropagation" disabled>
+                  
+                  <a href="#" class="action minimap-btn" title="Upload Minimap" onclick="event.preventDefault(); event.stopPropagation(); triggerMinimapUpload(this);">
+                    <svg class="icon"><use xlink:href="#map-icon"></use></svg> 
+                  </a>
+
+                  <input type="file" class="minimap-file-input" accept="image/png" style="display: none;" onclick="event.stopPropagation();" onchange="handleMinimapFile(this)">
                   <a href="#" class="action edit" data-bind="click: edit, visible: !processingState.isFailed()">
                     <svg class="icon pencil"><use xlink:href="#pencil"></use></svg>
                   </a>
@@ -760,6 +770,57 @@
 
 <script>window.DEBUG=true;</script>
 <script src="js/app5de6.js?b804ad7"></script>
+
+<script>
+  // 1. Trigger the hidden file input
+  function triggerMinimapUpload(btnElement) {
+    var fileInput = btnElement.nextElementSibling;
+    fileInput.click();
+  }
+
+  // 2. Handle the file upload and set minimapData directly on the panorama viewmodel
+  function handleMinimapFile(inputElement) {
+    if (!inputElement.files || inputElement.files.length === 0) return;
+    
+    var file = inputElement.files[0];
+    if (!file.type.match("image/png")) {
+        alert("Please upload a PNG file for the minimap.");
+        return;
+    }
+
+    // Match the panorama object from the app's viewmodel using data-panorama-id,
+    // which is set by Knockout's attr binding and equals panorama.uniqueId()
+    var liElement = inputElement.closest('li.panorama');
+    var panoId = liElement.getAttribute('data-panorama-id');
+    var panoramasList = window.app.viewModel.panoramas.list;
+    var panoramaViewModel = panoramasList.filter(function(p) {
+        return p.uniqueId() === panoId;
+    })[0];
+
+    if (!panoramaViewModel) {
+        alert("Could not find panorama data. Please try again.");
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+        // Set minimapData directly on the panorama object — this is what the
+        // export code (app5de6.js line ~22489) checks as: t.minimapData
+        panoramaViewModel.minimapData = ev.target.result;
+        
+        // Visual feedback: turn icon blue
+        var btnElement = inputElement.previousElementSibling;
+        btnElement.classList.add('minimap-active');
+        btnElement.setAttribute('title', file.name + ' uploaded!');
+    };
+    
+    // Read as ArrayBuffer — the zip export uses binary: true which expects ArrayBuffer
+    reader.readAsArrayBuffer(file);
+    
+    // Clear input so the same file can be re-uploaded if needed
+    inputElement.value = null; 
+  }
+</script>
 
 </body>
 

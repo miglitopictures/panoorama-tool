@@ -69,7 +69,7 @@
 
 
 <div id="map">
-  <img src="./assets/0-sala-de-estar.png" alt="Planta baixa do empreendmento.">
+  <img id="minimapImage" src="" alt="Planta baixa do empreendmento.">
   <p> PLANTA PADRÃO APARTAMENTO <br> ÁREA PRIVATIVA : 49,74m² </p> 
 </div>
 

@@ -22392,7 +22392,9 @@
                           return t.toObject()
                       }
                       ));
-                      return {
+                      
+                      // AFTER — minimap field added only if minimapData exists
+                        var o = {
                           id: t.uniqueId(),
                           name: t.name,
                           levels: t.levels,
@@ -22400,7 +22402,13 @@
                           initialViewParameters: t.settings.initialViewParameters,
                           linkHotspots: e,
                           infoHotspots: n
-                      }
+                        };
+
+                        if (t.minimapData) {
+                            o.minimap = "assets/" + t.uniqueId() + ".png";
+                        }
+
+                        return o;
                   }
                   )),
                   name: e,
@@ -22483,6 +22491,14 @@
                           t.cubeMapPreview && e.add(r, "preview.jpg", t.cubeMapPreview, {
                               binary: !0
                           }),
+
+                          // --- NEW LOGIC: EXPORT MINIMAP TO ASSETS FOLDER ---
+                          // Pull directly from the panorama object (t) instead of a dictionary
+                          t.minimapData && e.add(["app-files", "assets"], t.uniqueId() + ".png", t.minimapData, {
+                              binary: !0
+                          }),
+                          // --------------------------------------------------
+
                           t.tileStore.forEach((function(t, n, o, s, a, u) {
                               var l = [t, n, o].map((function(t) {
                                   return t.toString(10)

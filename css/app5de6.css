@@ -163,7 +163,7 @@ input {
   --font-mono:    'Space Mono', monospace;
 
   --color-black:  #111111;
-  --color-white:  #FFFFFF;
+  --color-white:  #dbdbdb;
   --color-bg:     #272727;  /* page background */
   --color-gray-1: #F5F5F5;  
   --color-gray-2: #E8E8E8;  /* borders, dividers */
@@ -553,6 +553,14 @@ a:hover, .link:hover {
   width: 100%;
   height: 100%;
   fill: var(--color-gray-4);
+}
+
+#sidebar .panorama .properties .action.minimap-active .icon {
+  fill: #2196f3;
+}
+
+#sidebar .panorama .properties .action.minimap-btn:hover .icon {
+  fill: #242424 !important;
 }
 
 #sidebar .panorama .status,

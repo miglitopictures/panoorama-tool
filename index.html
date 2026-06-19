@@ -308,6 +308,52 @@
         </div>
       </div>
 
+      <div class="accordion expand">
+    <div class="accordion-name">
+        <svg class="icon"><use xlink:href="#gallery"></use></svg>
+        <div class="text">Logo</div>
+    </div>
+    <div class="accordion-content">
+        <div id="logo-drop-zone" style="border: 2px dashed #ccc; padding: 16px; text-align: center; cursor: pointer;">
+            <div class="text">Drop logo .png here</div>
+        </div>
+        <img id="logo-preview" style="display:none; max-width:100%; margin-top:8px;">
+    </div>
+</div>
+
+<script>
+  var dropZone = document.getElementById("logo-drop-zone");
+  var preview = document.getElementById("logo-preview");
+
+  dropZone.addEventListener("dragover", function(e) {
+      e.preventDefault();
+      dropZone.style.borderColor = "#38a";
+  });
+
+  dropZone.addEventListener("dragleave", function() {
+      dropZone.style.borderColor = "#ccc";
+  });
+
+  dropZone.addEventListener("drop", function(e) {
+      e.preventDefault();
+      dropZone.style.borderColor = "#ccc";
+      var file = e.dataTransfer.files[0];
+      if (!file || !file.type.match("image/png")) {
+          alert("Please drop a PNG file");
+          return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+          // store as arraybuffer to match how other files are loaded
+          window._customLogo = ev.target.result;
+          preview.src = URL.createObjectURL(file);
+          preview.style.display = "block";
+          dropZone.querySelector(".text").textContent = file.name + " ✓";
+      };
+      reader.readAsArrayBuffer(file);
+  });
+</script>
+
       <div class="accordion panoramas expand" data-bind="css: { expand: accordionsOpen.panoramaList }">
         <div class="accordion-name" data-bind="click: accordionToggle.bind(null, 'panoramaList')">
           <svg class="icon"><use xlink:href="#gallery"></use></svg>

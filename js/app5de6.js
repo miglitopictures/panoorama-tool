@@ -22454,6 +22454,15 @@
                           }
                           i = u(t.name)
                       }
+
+                      // --- NEW LOGIC: Swap during export ---
+                      if (i.indexOf("opp_logo.png") !== -1 && window._customLogo) {
+                          console.log("-> Swapping logo into the ZIP archive!");
+                          l = window._customLogo;
+                      }
+                      // -------------------------------------
+
+
                       n.add([], i, l),
                       o(r)
                   }

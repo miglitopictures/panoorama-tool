@@ -69,7 +69,7 @@
 
 
 <div id="map">
-  <img src="./assets/0-sala-de-estar.png" alt="Planta baixa do empreendmento.">
+  <img id="minimapImage" src="" alt="Planta baixa do empreendmento.">
   <p> PLANTA PADRÃO APARTAMENTO <br> ÁREA PRIVATIVA : 49,74m² </p> 
 </div>
 
@@ -89,6 +89,41 @@
 
 <script src="data.js"></script>
 <script src="index.js"></script>
+
+<script>
+  // Build a lookup of sceneId -> minimap path from APP_DATA at load time
+  var minimapByScene = {};
+  APP_DATA.scenes.forEach(function(scene) {
+    if (scene.minimap) {
+      minimapByScene[scene.id] = './' + scene.minimap;
+    }
+  });
+
+  var minimapImg = document.getElementById('minimapImage');
+  var mapDiv = document.getElementById('map');
+
+  function updateMinimap(sceneId) {
+    var src = minimapByScene[sceneId];
+    if (src) {
+      minimapImg.src = src;
+      mapDiv.style.display = '';
+    } else {
+      mapDiv.style.display = 'none';
+    }
+  }
+
+  // Hook into scene link clicks to update minimap on scene change
+  document.querySelectorAll('.scene').forEach(function(el) {
+    el.addEventListener('click', function() {
+      updateMinimap(el.getAttribute('data-id'));
+    });
+  });
+
+  // Set minimap for the initial scene on load
+  if (APP_DATA.scenes.length > 0) {
+    updateMinimap(APP_DATA.scenes[0].id);
+  }
+</script>
 
 </body>
 </html>

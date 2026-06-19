@@ -492,6 +492,12 @@
               <div class="info">
                 <div class="properties">
                   <input class="name" type="text" data-bind="textInput: name, click: select, alignOnBlur, stopKeyPropagation" disabled>
+                  
+                  <a href="#" class="action minimap-btn" title="Upload Minimap" onclick="event.preventDefault(); event.stopPropagation(); triggerMinimapUpload(this);">
+                    <svg class="icon"><use xlink:href="#gallery"></use></svg> 
+                  </a>
+
+                  <input type="file" class="minimap-file-input" accept="image/png" style="display: none;" onclick="event.stopPropagation();" onchange="handleMinimapFile(this)">
                   <a href="#" class="action edit" data-bind="click: edit, visible: !processingState.isFailed()">
                     <svg class="icon pencil"><use xlink:href="#pencil"></use></svg>
                   </a>
@@ -760,6 +766,57 @@
 
 <script>window.DEBUG=true;</script>
 <script src="js/app5de6.js?b804ad7"></script>
+
+<script>
+  // 1. Trigger the hidden file input
+  function triggerMinimapUpload(btnElement) {
+    var fileInput = btnElement.nextElementSibling;
+    fileInput.click();
+  }
+
+  // 2. Handle the file upload and set minimapData directly on the panorama viewmodel
+  function handleMinimapFile(inputElement) {
+    if (!inputElement.files || inputElement.files.length === 0) return;
+    
+    var file = inputElement.files[0];
+    if (!file.type.match("image/png")) {
+        alert("Please upload a PNG file for the minimap.");
+        return;
+    }
+
+    // Match the panorama object from the app's viewmodel using data-panorama-id,
+    // which is set by Knockout's attr binding and equals panorama.uniqueId()
+    var liElement = inputElement.closest('li.panorama');
+    var panoId = liElement.getAttribute('data-panorama-id');
+    var panoramasList = window.app.viewModel.panoramas.list;
+    var panoramaViewModel = panoramasList.filter(function(p) {
+        return p.uniqueId() === panoId;
+    })[0];
+
+    if (!panoramaViewModel) {
+        alert("Could not find panorama data. Please try again.");
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+        // Set minimapData directly on the panorama object — this is what the
+        // export code (app5de6.js line ~22489) checks as: t.minimapData
+        panoramaViewModel.minimapData = ev.target.result;
+        
+        // Visual feedback: change the icon color to green
+        var btnElement = inputElement.previousElementSibling;
+        btnElement.style.color = "#4caf50"; 
+        btnElement.setAttribute('title', file.name + ' uploaded!');
+    };
+    
+    // Read as ArrayBuffer — the zip export uses binary: true which expects ArrayBuffer
+    reader.readAsArrayBuffer(file);
+    
+    // Clear input so the same file can be re-uploaded if needed
+    inputElement.value = null; 
+  }
+</script>
 
 </body>
 

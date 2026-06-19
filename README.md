@@ -1,6 +1,6 @@
-#PaNOOrama
+# PaNOOrama
 
-Essa ferramente é uma versão customizada do Marzipanoo Tool desenvovida especificamente para a NOO Works.
+Essa ferramente é uma versão customizada do Marzipanoo Tool desenvovida especificamente para a [NOO Works](http://noo.com.br/).
 
 ## Novas funcionalidades
 Adicionamos algumas funcionalidades e automações para nosso workflow:

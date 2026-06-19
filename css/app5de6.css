@@ -555,6 +555,14 @@ a:hover, .link:hover {
   fill: var(--color-gray-4);
 }
 
+#sidebar .panorama .properties .action.minimap-active .icon {
+  fill: #2196f3;
+}
+
+#sidebar .panorama .properties .action.minimap-btn:hover .icon {
+  fill: #242424 !important;
+}
+
 #sidebar .panorama .status,
 #sidebar .panorama .state {
   display: flex;

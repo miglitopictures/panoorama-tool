@@ -234,12 +234,18 @@ function switchScene(scene) {
     sceneListToggleElement.classList.toggle('enabled');
   }
 
-     function updateScenePlanta(scene) {
+  function updateScenePlanta(scene) {
+    var mapDiv = document.querySelector('#map');
     var mapImg = document.querySelector('#map img');
+    if (!scene.data.minimap) {
+      mapDiv.style.display = 'none';
+      return;
+    }
     mapImg.style.opacity = '0';
     setTimeout(function() {
-      mapImg.src = './assets/' + scene.data.id + '.png';
+      mapImg.src = './' + scene.data.minimap;
       mapImg.style.opacity = '1';
+      mapDiv.style.display = '';
     }, 400);
   }
 

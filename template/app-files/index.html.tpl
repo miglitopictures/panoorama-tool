@@ -73,6 +73,17 @@
   <p> PLANTA PADRÃO APARTAMENTO <br> ÁREA PRIVATIVA : 49,74m² </p> 
 </div>
 
+<!-- NOTA LEGAL TRIGGER -->
+<a href="javascript:void(0)" id="notaLegalToggle">Ver nota legal</a>
+
+<!-- NOTA LEGAL MODAL -->
+<div id="notaLegalOverlay">
+  <div id="notaLegalBox">
+    <p>Teste de nota legal. Colocar texto aqui. Esse texto aqui eh a nota legal da pagina do tour foto 360 do Opp.</p>
+    <button id="notaLegalClose">Fechar</button>
+  </div>
+</div>
+
 
 <img src="./assets/opp_logo.png" id="logo" alt="Logotipo Opportunity">
 
@@ -89,6 +100,28 @@
 
 <script src="data.js"></script>
 <script src="index.js"></script>
+
+<script>
+  var toggle = document.getElementById('notaLegalToggle');
+  var overlay = document.getElementById('notaLegalOverlay');
+  var closeBtn = document.getElementById('notaLegalClose');
+
+  toggle.addEventListener('click', function() {
+    overlay.classList.add('visible');
+  });
+
+  closeBtn.addEventListener('click', function() {
+    overlay.classList.remove('visible');
+  });
+
+  // Also close when clicking outside the white box
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('visible');
+    }
+  });
+</script>
+
 
 </body>
 </html>

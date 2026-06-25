@@ -982,3 +982,82 @@ body.view-control-buttons .viewControlButton {
 #sceneList {
   z-index: 6;
 }
+
+/* ─── Nota Legal link ────────────────────────────────────── */
+
+#notaLegalToggle {
+  position: absolute;
+  bottom: 4px;
+  left: 16px;
+  z-index: 10;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#notaLegalToggle:hover {
+  color: #ffffff;
+}
+
+/* ─── Nota Legal modal overlay ───────────────────────────── */
+
+#notaLegalOverlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 20000;
+  justify-content: center;
+  align-items: center;
+}
+
+#notaLegalOverlay.visible {
+  display: flex;
+}
+
+#notaLegalBox {
+  background-color: #ffffff;
+  border-radius: 6px;
+  padding: 32px 28px 24px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  text-align: left;
+}
+
+#notaLegalBox p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #0a0a0a;
+  margin: 0 0 24px;
+  -moz-user-select: text;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+#notaLegalClose {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 28px;
+  background-color: #e2611c;
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  font-family: "Poppins", "Helvetica Neue", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+#notaLegalClose:hover {
+  background-color: #c9531a;
+}
